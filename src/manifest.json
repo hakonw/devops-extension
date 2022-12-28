@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Devops extension",
+  "version": "0.1.0",
+  "author": "Håkon Wardeberg",
+  "description": "A Devops extension! Open devops files in Jetbrains products and VSCode!",
+  "content_scripts": [
+    {
+      "matches": ["https://dev.azure.com/*", "https://*.visualstudio.com/*"],
+      "run_at": "document_idle",
+      "js": ["content.js"]
+    }
+  ],
+  "permissions": ["storage"],
+  "icons": {
+    "256": "icons/icon256.png"
+  }
+}
