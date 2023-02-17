@@ -1,4 +1,4 @@
-# Vise ting i devops!
+# Open Azure Devops file links in VSCode and Jetbrains products 🎉
 
 ## Manual Install
 
