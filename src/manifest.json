@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Devops extension",
-  "version": "0.1.0",
+  "name": "Devops opener",
+  "version": "0.1.2",
   "author": "Håkon Wardeberg",
   "description": "A Devops extension! Open devops files in Jetbrains products and VSCode!",
   "content_scripts": [
@@ -12,7 +12,11 @@
     }
   ],
   "permissions": ["storage"],
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Åpne ting i rider og jetbrains!"
+  },
   "icons": {
-    "256": "icons/icon256.png"
+    "256": "favicon.png"
   }
 }

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Devops Extension Options</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <style>
+      body {
+        width: 31rem; /* 14rem*2 + gap of 1.5rem or something*/
+      }
+
+      [type="checkbox"] {
+        vertical-align: middle;
+      }
+
+      .c-element {
+        width: 14rem;
+        padding: 0.5rem;
+      }
+    </style>
+  </head>
+  <!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->
+
+  <body class="m-3">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <h3 class="text-center">Settings</h3>
+        </div>
+      </div>
+
+      <div class="d-flex flex-row flex-wrap gap-4">
+        <!-- WEBSTORM -->
+        <div class="c-element border ronuded">
+          <div class="col-md-12">
+            <h6 class="mt-1">Webstorm</h6>
+
+            <div class="checkbox mb-2">
+              <label>
+                <input id="webstorm-enabled" type="checkbox" /> Enable
+              </label>
+            </div>
+
+            <label>Ignore prefix:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="webstorm-ignore-prefix"
+              placeholder=""
+            />
+            <small id="prefixHelp" class="form-text text-muted">
+              Prefix of path to remove. Empty means remove nothing.
+            </small>
+          </div>
+        </div>
+
+        <!-- Rider -->
+        <div class="c-element border ronuded">
+          <div class="col-md-12">
+            <h6 class="mt-1">Rider</h6>
+
+            <div class="checkbox mb-2">
+              <label>
+                <input id="rider-enabled" type="checkbox" /> Enable
+              </label>
+            </div>
+
+            <label>Ignore prefix:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="rider-ignore-prefix"
+              placeholder=""
+            />
+            <small id="prefixHelp" class="form-text text-muted">
+              Prefix of path to remove. Empty means remove nothing.
+            </small>
+          </div>
+        </div>
+
+        <!-- VSCode -->
+        <div class="c-element border ronuded">
+          <div class="col-md-12">
+            <h6 class="mt-1">Visual Studio Code</h6>
+
+            <div class="checkbox mb-2">
+              <label>
+                <input id="vscode-enabled" type="checkbox" /> Enable
+              </label>
+            </div>
+
+            <label>Add prefix:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="vscode-add-prefix"
+              placeholder=""
+            />
+            <small id="prefixHelp" class="form-text text-muted">
+              Prefex to add before filename. This will be the absolute path to
+              the git root.
+            </small>
+          </div>
+        </div>
+
+        <!-- Copy Buttons -->
+        <div class="c-element border ronuded">
+          <div class="col-md-12">
+            <h6 class="mt-1">Branch copy button</h6>
+
+            <div class="checkbox mb-2">
+              <label>
+                <input id="copybranch-enabled" type="checkbox" /> Enable
+              </label>
+            </div>
+            <small id="prefixHelp" class="form-text text-muted">
+              This will allow branches to be easy from links and hashes from commit links.
+             </small>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+      <div class="row">
+        <div class="col-md-12 mt-4">
+          <button
+            type="button"
+            id="save"
+            class="btn btn-primary btn-md btn-block"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="options.js"></script>
+  </body>
+</html>
