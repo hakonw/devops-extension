@@ -1,0 +1,34 @@
+name: Update Chrome Extension
+
+on:
+  push:
+    tags:
+      - '*'
+      
+jobs:
+  build-chrome-extension:
+    name: Build Chrome extension artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: |-
+          zip -r chrome-extension-${{ github.event.pull_request.head.sha }}.zip src
+
+      - name: Archive chrome-extension artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: chrome-extension-${{ github.sha }}
+          path: chrome-extension-${{ github.event.pull_request.head.sha }}.zip
+          
+      - name: Push to store
+        uses: Klemensas/chrome-extension-upload-action@$1.4.1
+        with:
+          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          file-name: chrome-extension-${{ github.event.pull_request.head.sha }}.zip
+          app-id: 'xzc12xzc21cx23'
+          publish: true
