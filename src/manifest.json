@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Devops opener",
+  "name": "Azure Devops File Opener",
   "version": "0.1.2",
   "author": "Håkon Wardeberg",
-  "description": "A Devops extension! Open devops files in Jetbrains products and VSCode!",
+  "description": "Open Azure Devops files in VSCode and Jetbrains products!",
   "content_scripts": [
     {
       "matches": ["https://dev.azure.com/*", "https://*.visualstudio.com/*"],
@@ -14,7 +14,7 @@
   "permissions": ["storage"],
   "action": {
     "default_popup": "index.html",
-    "default_title": "Åpne ting i rider og jetbrains!"
+    "default_title": "Open tings in VSCode and jetbrains!"
   },
   "icons": {
     "256": "favicon.png"
