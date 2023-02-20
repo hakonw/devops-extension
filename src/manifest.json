@@ -17,6 +17,6 @@
     "default_title": "Open tings in VSCode and jetbrains!"
   },
   "icons": {
-    "256": "favicon.png"
+    "256": "icons/favicon.png"
   }
 }
