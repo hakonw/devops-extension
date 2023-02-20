@@ -108,6 +108,8 @@ function restore_options() {
         fileExtensions.value = card.fileExtensions;
         useVSCode.checked = card.useVSCode;
         jetbrainsPort.value = card.jetbrainsPort;
+
+        setVisibilityJetbrainsPort(useVSCode.checked, cloned);
       }
     }
   );
@@ -115,6 +117,14 @@ function restore_options() {
 
 document.addEventListener("DOMContentLoaded", restore_options);
 document.getElementById("save").addEventListener("click", save_options);
+
+function setVisibilityJetbrainsPort(checked, element) {
+  const displayValue = checked ? "none" : "";
+  element.getElementsByClassName("r-jetbrains-port")[0].style.display =
+    displayValue;
+  element.getElementsByClassName("r-jetbrains-label")[0].style.display =
+    displayValue;
+}
 
 function addCustomButton() {
   const refEl = document.getElementsByClassName("c-template")[0];
@@ -124,13 +134,14 @@ function addCustomButton() {
 
   clone
     .getElementsByClassName("btn-outline-danger")[0]
-    .addEventListener("click", () => remove(clone));
+    .addEventListener("click", () => clone.remove());
+
+  const checkbox = clone.getElementsByClassName("r-use-vs")[0];
+  checkbox.addEventListener("change", () => {
+    setVisibilityJetbrainsPort(checkbox.checked, clone);
+  });
 
   return clone;
 }
 
 document.getElementById("addButton").addEventListener("click", addCustomButton);
-
-function remove(t) {
-  t.remove();
-}
