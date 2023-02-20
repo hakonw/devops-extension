@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Azure Devops File Opener",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": "Håkon Wardeberg",
   "description": "Open Azure Devops files in VSCode and Jetbrains products!",
   "content_scripts": [
