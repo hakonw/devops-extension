@@ -1,25 +1,9 @@
+// Jetbrains api reference
 // https://github.com/JetBrains/intellij-community/blob/a77365debaadcf00b888a977d89512f3f0f3cf9e/platform/built-in-server/src/org/jetbrains/ide/OpenFileHttpService.kt
 
 //////////////////////
 // Options Handling //
 //////////////////////
-const fallbackOptions = {
-  webstorm: {
-    enabled: true,
-    ignorePrefix: "",
-  },
-  rider: {
-    enabled: true,
-    ignorePrefix: "",
-  },
-  vscode: {
-    enabled: false,
-    addPrefix: "Users/Person/git/repo/",
-  },
-  copybranch: {
-    enabled: true,
-  },
-};
 const options = {};
 
 getOptionsStorageSyncData()
@@ -53,15 +37,9 @@ chrome.storage.onChanged.addListener((changes, area) => {
 ///////////////////////
 // Button Generation //
 ///////////////////////
-// TODO replace isFrontend & isBackend with options?
-function isFrontend(path) {
-  const re = new RegExp(".*\\.(ts|js|html|json|css|scss)$");
-  return re.test(path);
-}
-
-function isBackend(path) {
-  const re = new RegExp(".*\\.(cs|vb|sql|txt)$");
-  return re.test(path);
+function extensionMatches(path, commaSeparatedFileTypes) {
+  const fileTypes = commaSeparatedFileTypes.split(",");
+  return fileTypes.length === 0 || fileTypes.some((ext) => path.endsWith(ext));
 }
 
 function addButton(buttonText, url, parentElement, useFetch) {
@@ -79,7 +57,7 @@ function addButton(buttonText, url, parentElement, useFetch) {
   btn.style.color = window.getComputedStyle(document.body)["color"];
   btn.style.padding = "2px 8px";
 
-  btn.addEventListener("click", function () {
+  btn.addEventListener("click", () => {
     if (useFetch) {
       fetch(url).then((data) => console.log(data));
     } else {
@@ -92,61 +70,48 @@ function addButton(buttonText, url, parentElement, useFetch) {
 const removePrefix = (value, prefix) =>
   value.startsWith(prefix) ? value.slice(prefix.length) : value;
 
-function addWebstormButton(path, lineNumber, root) {
-  if (isFrontend(path)) {
-    if (options.webstorm?.enabled ?? fallbackOptions.webstorm.enabled) {
-      let newPath = removePrefix(
-        path,
-        options.webstorm?.ignorePrefix ?? fallbackOptions.webstorm.ignorePrefix
-      );
-      const linePart = lineNumber ? "&line=" + lineNumber : "";
-      addButton(
-        "Webstorm",
-        "http://localhost:63343/api/file?file=" + newPath + linePart,
-        root,
-        true
-      );
-    }
-  }
+function addJetbrainsButton(path, lineNumber, root, cardSetting) {
+  const newPath =
+    cardSetting.addPrefix + removePrefix(path, cardSetting.ignorePrefix);
+  const linePart = lineNumber ? "&line=" + lineNumber : "";
+  const port =
+    cardSetting.jetbrainsPort === undefined || cardSetting.jetbrainsPort === ""
+      ? "63342"
+      : cardSetting.jetbrainsPort;
+  addButton(
+    cardSetting.name,
+    `http://localhost:${port}/api/file?file=${newPath}${linePart}`,
+    root,
+    true
+  );
 }
 
-function addRiderButton(path, lineNumber, root) {
-  if (isBackend(path)) {
-    if (options.rider?.enabled ?? fallbackOptions.rider.enabled) {
-      let newPath = removePrefix(
-        path,
-        options.rider?.ignorePrefix ?? fallbackOptions.rider.ignorePrefix
-      );
-      const linePart = lineNumber ? "&line=" + lineNumber : "";
-      addButton(
-        "Rider",
-        "http://localhost:63342/api/file?file=" + newPath + linePart,
-        root,
-        true
-      );
-    }
-  }
-}
+function addVSCodeButton(path, lineNumber, root, cardSetting) {
+  const newPath =
+    cardSetting.addPrefix + removePrefix(path, cardSetting.ignorePrefix);
 
-function addVSCodeButton(path, lineNumber, root) {
-  if (isFrontend(path)) {
-    // vscode://file/[path/to/file]:[line]
-    if (options.vscode?.enabled ?? fallbackOptions.vscode.enabled) {
-      const linePart = lineNumber ? ":" + lineNumber : "";
-      addButton(
-        "VSCode",
-        "vscode://file/" + options.vscode?.addPrefix + path + linePart,
-        root
-      );
-    }
-  }
+  // vscode://file/[path/to/file]:[line]
+  const linePart = lineNumber ? ":" + lineNumber : "";
+  addButton(
+    cardSetting.name,
+    "vscode://file/" + newPath + linePart,
+    root,
+    false
+  );
 }
 
 function addButtons(path, lineNumber, root) {
   removeInjectedButtons(root);
-  addWebstormButton(path, lineNumber, root);
-  addRiderButton(path, lineNumber, root);
-  addVSCodeButton(path, lineNumber, root);
+
+  for (const cardOptions of Array.from(options.cards ?? [])) {
+    if (extensionMatches(path, cardOptions.fileExtensions)) {
+      if (cardOptions.useVSCode === true) {
+        addVSCodeButton(path, lineNumber, root, cardOptions);
+      } else {
+        addJetbrainsButton(path, lineNumber, root, cardOptions);
+      }
+    }
+  }
   // TODO add jetbrains:  jetbrains://php-storm/navigate/reference?project=${projectName}&path=${path}:${line}  (and like that)
 }
 
@@ -162,7 +127,6 @@ function removeInjectedButtons(element) {
   for (let i = possiblyInjectedButton.length - 1; i >= 0; i--) {
     // Go the inverse way to remove ghost buttons
     possiblyInjectedButton[i].remove();
-    console.log("RemovedButton");
   }
 }
 
@@ -176,7 +140,6 @@ function getLineNumber(element) {
   const lineNumbers = element.getElementsByClassName("repos-line-number");
   for (const lineNum of lineNumbers) {
     const parsedNumber = parseInt(lineNum.getAttribute("data-line"));
-    // console.log(parsedNumber);
     if (!Number.isNaN(parsedNumber)) {
       lineNumber = parsedNumber;
       break;
@@ -220,7 +183,6 @@ function generateButtonsChangedFileHeader() {
     // Or crash, whatever
   }
   const repoToolbar = repoToolbars[0];
-  // removeInjectedButtons(repoToolbar);
 
   const textElements = repoToolbar.getElementsByClassName(
     "secondary-text body-s text-ellipsis"
@@ -240,8 +202,6 @@ function generateButtonsFileSummary() {
   const summaries = document.getElementsByClassName("repos-summary-header");
 
   for (let summary of summaries) {
-    // removeInjectedButtons(summary);
-
     let pathElements = summary.getElementsByClassName(
       "body-s secondary-text text-ellipsis"
     );
@@ -260,7 +220,6 @@ function generateButtonsFileSummary() {
 
     let lineNumber = getLineNumber(summary);
 
-    // Add button
     addButtons(path, lineNumber, pathElement);
   }
 }
@@ -276,7 +235,7 @@ function addCopyBranchButton() {
   element.forEach((e) => {
     removeInjectedButtons(e);
 
-    if (!(options.copybranch?.enabled ?? fallbackOptions.copybranch.enabled)) {
+    if (!(options.copybranch?.enabled ?? true)) {
       return;
     }
 
@@ -342,7 +301,6 @@ function observerCallback() {
   // https://example.visualstudio.com/CAT/_git/CAT/pullrequest/74514?_a=files
   // https://dev.azure.com/example/CAT/_git/CAT/pullrequest/74609?path=/src&_a=files
   if (isPullRequest && urlParams.get("_a") === "files") {
-    console.log("Got update for summary");
     generateButtonsFileSummary();
   }
 
@@ -352,7 +310,6 @@ function observerCallback() {
     urlParams.get("_a") === "files" && // Inside Files tab
     urlParams.has("path") // opened a file
   ) {
-    console.log("Got update with heading at files");
     generateButtonsChangedFileHeader();
   }
 

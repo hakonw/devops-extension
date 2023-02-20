@@ -24,6 +24,11 @@
         width: 14rem;
         padding: 0.5rem;
       }
+
+      .c-template {
+        display: none;
+      }
+
     </style>
   </head>
   <!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->
@@ -37,76 +42,73 @@
       </div>
 
       <div class="d-flex flex-row flex-wrap gap-4">
-        <!-- WEBSTORM -->
-        <div class="c-element border ronuded">
+        <!-- Base element -->
+        <div class="c-element border ronuded r-button c-template">
           <div class="col-md-12">
-            <h6 class="mt-1">Webstorm</h6>
+            <h6 class="mt-1">
+              Custom button
+                <button
+                type="button"
+                class="btn btn-outline-danger btn-block btn-sm"
+              >
+                Remove
+              </button>
+            </h6> 
 
-            <div class="checkbox mb-2">
-              <label>
-                <input id="webstorm-enabled" type="checkbox" /> Enable
-              </label>
-            </div>
-
-            <label>Ignore prefix:</label>
+            <!-- Prefix -->
+            <label>Name:</label>
             <input
               type="text"
-              class="form-control"
-              id="webstorm-ignore-prefix"
+              class="form-control r-name"
               placeholder=""
             />
-            <small id="prefixHelp" class="form-text text-muted">
-              Prefix of path to remove. Empty means remove nothing.
-            </small>
-          </div>
-        </div>
-
-        <!-- Rider -->
-        <div class="c-element border ronuded">
-          <div class="col-md-12">
-            <h6 class="mt-1">Rider</h6>
-
-            <div class="checkbox mb-2">
-              <label>
-                <input id="rider-enabled" type="checkbox" /> Enable
-              </label>
-            </div>
-
-            <label>Ignore prefix:</label>
-            <input
-              type="text"
-              class="form-control"
-              id="rider-ignore-prefix"
-              placeholder=""
-            />
-            <small id="prefixHelp" class="form-text text-muted">
-              Prefix of path to remove. Empty means remove nothing.
-            </small>
-          </div>
-        </div>
-
-        <!-- VSCode -->
-        <div class="c-element border ronuded">
-          <div class="col-md-12">
-            <h6 class="mt-1">Visual Studio Code</h6>
-
-            <div class="checkbox mb-2">
-              <label>
-                <input id="vscode-enabled" type="checkbox" /> Enable
-              </label>
-            </div>
-
+            
+            <!-- Prefix -->
             <label>Add prefix:</label>
             <input
               type="text"
-              class="form-control"
-              id="vscode-add-prefix"
+              class="form-control r-prefix"
               placeholder=""
             />
-            <small id="prefixHelp" class="form-text text-muted">
-              Prefex to add before filename. This will be the absolute path to
+            <small class="form-text text-muted">
+              Prefex to add before filename. For VSCode, this must be the absolute path to
               the git root.
             </small>
+
+             <!-- Ignore prefix -->
+            <label>Ignore prefix:</label>
+            <input
+              type="text"
+              class="form-control r-ignore-prefix"
+              placeholder=""
+            />
+            <small class="form-text text-muted">
+              Prefix of path to remove. Empty means remove nothing.
+            </small>
+
+            <!-- What files -->
+            <label>Activate for files</label>
+            <input
+              type="text"
+              class="form-control r-files"
+              placeholder=""
+            />
+            <small class="form-text text-muted">
+              Comma separated file extensions to activate for, example: cs,vb,sql
+            </small>
+
+            <div class="checkbox mb-2">
+              <label>
+                <input class="r-use-vs" type="checkbox" /> Use VSCode protocol (instead of Jetbrains)
+              </label>
+            </div>
+
+            <label>Port for Jetbrain product</label>
+            <input
+              type="text"
+              class="form-control r-jetbrains-port"
+              placeholder="63342"
+            />
           </div>
         </div>
 
@@ -120,9 +122,14 @@
                 <input id="copybranch-enabled" type="checkbox" /> Enable
               </label>
             </div>
-            <small id="prefixHelp" class="form-text text-muted">
+            <small id="prefixHelp-copybranch" class="form-text text-muted">
               This will allow branches to be easy from links and hashes from commit links.
              </small>
+
+             <h6 class="mt-1">Info</h6>
+             Hi! This extension is still a bit rough. I might fix it later.
+             Any issues? Report them on <a href="https://github.com/hakonw/devops-extension/issues">github</a>! 
+             To use this with a Jetbrains product, please install the plugin <a href="https://plugins.jetbrains.com/plugin/19991-ide-remote-control">IDE Remove Control</a>.
           </div>
         </div>
 
@@ -132,6 +139,17 @@
 
       <div class="row">
         <div class="col-md-12 mt-4">
+            <button
+            type="button"
+            id="addButton"
+            class="btn btn-secondary btn-md btn-block"
+          >
+            Add another IDE
+          </button>
+        </div>
+
+        <div class="col-md-12 mt-4">
+
           <button
             type="button"
             id="save"
